@@ -27,7 +27,6 @@ server.get('/projects', (req, res) =>{
 
 server.get('/projects/:id', (req, res) =>{
     const { id } = req.params
-    console.log(id)
     projectDb.get(id)
     .then( project =>{
         if(project){
@@ -37,7 +36,7 @@ server.get('/projects/:id', (req, res) =>{
         } else {
             res
             .status(404)
-            .json({error: "The project with the specified if does not exist"})
+            .json({error: "The project with the specified ID does not exist"})
         }  
     })
     .catch(err =>{
@@ -46,6 +45,44 @@ server.get('/projects/:id', (req, res) =>{
         .json({error: "The project information could not be retrieved"})
     })
 })
+
+//GET Actions
+
+server.get('/actions', (req, res) =>{
+    actionDb.get()
+    .then( actions =>{
+        res
+        .status(200)
+        .json(actions)
+    })
+    .catch(err =>{
+        res
+        .status(500)
+        .json({error: "The actions could not be retrieved"})
+    })
+})
+
+server.get('/actions/:id', (req, res) =>{
+    const { id } = req.params
+    actionDb.get(id)
+    .then( action =>{
+        if(action){
+            res
+            .status(200)
+            .json(action)
+        } else {
+            res
+            .status(404)
+            .json({error: "The action with the specified ID does not exist"})
+        }
+    })
+    .catch(err =>{
+        res
+        .status(500)
+        .json({error: "The actions could not be retrieved"})
+    })
+})
+
 
 //POST
 
