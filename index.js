@@ -52,9 +52,16 @@ server.get('/projects/actions/:id', (req, res) =>{
     const { id } = req.params
     projectDb.getProjectActions(id)
     .then( actions =>{
-        res
-        .status(200)
-        .json(actions)
+        if(actions.length !== 0){
+            res
+            .status(200)
+            .json(actions)
+        } else {
+            res
+            .status(404)
+            .json({error: "The project with the specified ID does not exist"})
+        }
+        
     })
     .catch( err =>{
         res
