@@ -49,6 +49,35 @@ server.get('/projects/:id', (req, res) =>{
 
 //POST
 
+server.post('/projects', (req, res) =>{
+    const project = req.body
+    if(project.name && project.description && project.completed){
+        projectDb.insert(project)
+        .then(idInfo =>{
+            projectDb.get(idInfo.id)
+            .then(newProject =>{
+                res
+                .status(201)
+                .json({message: `New Project, ${project.name}, created`})
+            })
+            .catch(err =>{
+                res
+                .status(400)
+                .json({error: "There was an error"})
+            })
+        })
+        .catch(err=>{
+            res
+            .status(500)
+            .json({error: "There was an error while saving your project to the database"})
+        })
+    } else {
+        res
+        .status(400)
+        .json({errorMessage: "Please provide the details of the project"})
+    }
+})
+
 //PUT
 
 //DELETE
