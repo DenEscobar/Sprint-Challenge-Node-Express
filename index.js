@@ -232,6 +232,29 @@ server.delete('/projects/:id', (req, res) =>{
     })
 })
 
+//Delete Actions
+
+server.delete('/actions/:id', (req, res) =>{
+    const { id } = req.params
+    actionDb.remove(id)
+    .then(count =>{
+        if(count === 1){
+            res
+            .status(200)
+            .json({message: `Action ID:${id} deleted`})
+        } else {
+            res
+            .status(404)
+            .json({message: "The action with the specified ID does not exist"})
+        }
+    })
+    .catch( err =>{
+        res
+        .status(500)
+        .json({error: "The action could not be removed"})
+    })
+})
+
 server.listen(PORT, () =>{
     console.log(`server is running on port ${PORT}`);
 });
