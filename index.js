@@ -84,7 +84,7 @@ server.get('/actions/:id', (req, res) =>{
 })
 
 
-//POST
+//POST project
 
 server.post('/projects', (req, res) =>{
     const project = req.body
@@ -115,11 +115,41 @@ server.post('/projects', (req, res) =>{
     }
 })
 
+//POST Actions
+
+server.post('/actions', (req, res) =>{
+    const action = req.body
+    if(action.project_id && action.description && action.notes && action.completed){
+        actionDb.insert(action)
+        .then(idInfo =>{
+            actionDb.get(idInfo.id)
+            .then(newAction =>{
+                res
+                .status(201)
+                .json({message: "New Action created"})
+            })
+            .catch(err =>{
+                res
+                .status(400)
+                .json({error: "There was an error"})
+            })
+        })
+        .catch(err=>{
+            res
+            .status(500)
+            .json({error: "There was an error while saving your action to the database"})
+        })
+    } else {
+        res
+        .status(400)
+        .json({errorMessage: "Please provide the details of the action"})
+    }
+})
+
 //PUT
 
 server.put('/projects/:id', (req, res) =>{
     const  { id } = req.params
-    console.log(id)
     const project = req.body
     projectDb.update(id, project)
     .then( idInfo =>{
@@ -137,13 +167,45 @@ server.put('/projects/:id', (req, res) =>{
         } else {
             res
             .status(404)
-            .json({error: "The user with the specified id does not exist"})
+            .json({error: "The project with the specified id does not exist"})
         }
     })
     .catch(err =>{
         res
         .status(500)
         .json({error: "The project information could not be modified"})
+    })
+})
+
+//PUT Actions
+
+server.put('/actions/:id', (req, res) =>{
+    const  { id } = req.params
+    const project = req.body
+    console.log(id, project)
+    actionDb.update(id, project)
+    .then( idInfo =>{
+        console.log(idInfo)
+        if(idInfo !== null){
+            if(action.project_id && action.description && action.notes && action.completed){
+                res
+                .status(200)
+                .json({message: "Action information updated"})
+            } else{
+                res
+                .status(400)
+                .json({errorMessage: "Please provide information to update action"})
+            }
+        } else {
+            res
+            .status(404)
+            .json({error: "The action with the specified id does not exist"})
+        }
+    })
+    .catch(err =>{
+        res
+        .status(500)
+        .json({error: "The actions information could not be modified"})
     })
 })
 
