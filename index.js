@@ -46,6 +46,23 @@ server.get('/projects/:id', (req, res) =>{
     })
 })
 
+//GET Project action
+
+server.get('/projects/actions/:id', (req, res) =>{
+    const { id } = req.params
+    projectDb.getProjectActions(id)
+    .then( actions =>{
+        res
+        .status(200)
+        .json(actions)
+    })
+    .catch( err =>{
+        res
+        .status(500)
+        .json({error: "The projects actions could not be retrieved"})
+    })
+})
+
 //GET Actions
 
 server.get('/actions', (req, res) =>{
